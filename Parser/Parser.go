@@ -15,19 +15,17 @@ type Parser struct {
 }
 
 func (p *Parser) Parse(s string) []interface{} {
+	p.ops.Clear()
+	p.rpn.Clear()
 	return p.shunting_yard([]rune(s))
 }
 
 func (p *Parser) shunting_yard(s []rune) []interface{} {
-	
-	p.ops.Clear()
-	p.rpn.Clear()
-
 	for i := 0; i < len(s); i++ {
 		if t := s[i]; p.isNum(t) {
 			ti := int(t-'0')
 			// if current s is number and also
-			// next one, means its the same number
+			// next one, then its the same number
 			for j := i + 1; j < len(s); j++ {
 				if p.isNum(s[j]) {
 					ti = ti * 10 + int(s[j]-'0') 
@@ -43,7 +41,7 @@ func (p *Parser) shunting_yard(s []rune) []interface{} {
 			leftPare := false
 			for !p.ops.IsEmpty() {
 				op := p.ops.Peek()
-				if p.isOp(op.(rune)) {
+				if p.isOp(op) {
 					p.rpn.Push(p.ops.Pop())
 				} else if op == '(' {
 					leftPare = true
@@ -58,17 +56,17 @@ func (p *Parser) shunting_yard(s []rune) []interface{} {
 				// TODO: ERROR
 			}
 		} else if p.isOp(t) {
-			// TODO: right association such as ++,--,>,<,= is ignored
+			// TODO: right association is ignored
+			// such as ++,--,>,<,=
 
 			// keep pop op in ops which priority
 			// is equal to or larger than t
-			for {
+			for !p.ops.IsEmpty() {
 				op := p.ops.Peek()
-				if op == nil || !p.isOp(op.(rune)) {
+				if !p.isOp(op) {
 					break
 				}
-
-				if p.gp(t) <= p.gp(op.(rune)) {
+				if p.gp(t) <= p.gp(op) {
 					p.rpn.Push( p.ops.Pop() )
 				} else {
 					break
@@ -80,7 +78,7 @@ func (p *Parser) shunting_yard(s []rune) []interface{} {
 
 	// pop all op in ops to rpn,
 	// if '(' exist, then there are mismatched parentheses
- 	for p.ops.Size() > 0 {
+ 	for !p.ops.IsEmpty() {
 		switch op := p.ops.Pop(); op {
 		case '+', '-', '*', '/':
 			p.rpn.Push(op)
@@ -103,10 +101,10 @@ func (p *Parser) isNum(t rune) bool {
 }
 
 
-func (p *Parser) isOp(t rune) bool {
+func (p *Parser) isOp(t interface{}) bool {
 	ts := []rune{'+','-','*','/'}
 	for i := 0; i < len(ts); i++ {
-		if t == ts[i] {
+		if t.(rune) == ts[i] {
 			return true
 		}
 	}
@@ -114,8 +112,8 @@ func (p *Parser) isOp(t rune) bool {
 }
 
 // the greater, the higher priority
-func (p *Parser) gp(t rune) int {
-	switch t {
+func (p *Parser) gp(t interface{}) int {
+	switch t.(rune) {
 	case '+', '-':
 		return 0
 	case '*', '/':
