@@ -14,11 +14,15 @@ type Parser struct {
 	ops Collection.Stack
 }
 
-func (p *Parser) Parse(s string) {
-	p.shunting_yard([]rune(s))
+func (p *Parser) Parse(s string) []interface{} {
+	return p.shunting_yard([]rune(s))
 }
 
-func (p *Parser) shunting_yard(s []rune)  {
+func (p *Parser) shunting_yard(s []rune) []interface{} {
+	
+	p.ops.Clear()
+	p.rpn.Clear()
+
 	for i := 0; i < len(s); i++ {
 		if t := s[i]; p.isNum(t) {
 			ti := int(t-'0')
@@ -37,7 +41,7 @@ func (p *Parser) shunting_yard(s []rune)  {
 			p.ops.Push(t)
 		} else if t == ')' {
 			leftPare := false
-			for i := 0; i < p.ops.Size(); i++ {
+			for !p.ops.IsEmpty() {
 				op := p.ops.Peek()
 				if p.isOp(op.(rune)) {
 					p.rpn.Push(p.ops.Pop())
@@ -84,6 +88,8 @@ func (p *Parser) shunting_yard(s []rune)  {
 			// TODO: ERROR
 		}
 	}
+
+	return p.rpn.Dup()
 }
 
 func (p *Parser) isNum(t rune) bool {
