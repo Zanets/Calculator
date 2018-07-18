@@ -35,6 +35,24 @@ func (q *Queue) Dup() []interface{} {
 	return dup
 }
 
+func (q *Queue) Build(t []interface{}) {
+	q.nodes = append([]interface{}{nil}, t...)
+	q.count = len(q.nodes)
+}
+
 func (q *Queue) Size() int {
 	return q.count
+}
+
+func (q *Queue) IsEmpty() bool {
+	if q.count <= 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (q *Queue) Clear() {
+	q.nodes = nil
+	q.count = 0
 }

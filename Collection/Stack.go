@@ -35,6 +35,24 @@ func (s *Stack) Dup() []interface{} {
 	return dup
 }
 
+func (s *Stack) Build(t []interface{}) {
+	s.nodes = append([]interface{}{nil}, t...)
+	s.count = len(s.nodes)
+}
+
 func (s *Stack) Size() int {
 	return s.count
+}
+
+func (s *Stack) IsEmpty() bool {
+	if s.count <= 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (s *Stack) Clear() {
+	s.nodes = nil
+	s.count = 0
 }
