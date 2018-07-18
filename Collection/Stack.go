@@ -11,7 +11,7 @@ func (s *Stack) Push(n interface{}) {
 }
 
 func (s *Stack) Pop() interface{} {
-	if s.count <= 0 || s.count > len(s.nodes) {
+	if s.IsEmpty() {
 		return nil
 	}
 
@@ -22,7 +22,7 @@ func (s *Stack) Pop() interface{} {
 }
 
 func (s *Stack) Peek() interface{} {
-	if s.count <= 0 || s.count > len(s.nodes) {
+	if s.IsEmpty() {
 		return nil
 	}
 
@@ -45,7 +45,7 @@ func (s *Stack) Size() int {
 }
 
 func (s *Stack) IsEmpty() bool {
-	if s.count <= 0 {
+	if s.Size() <= 0 {
 		return true
 	} else {
 		return false

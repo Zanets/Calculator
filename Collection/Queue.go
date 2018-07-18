@@ -11,7 +11,7 @@ func (q *Queue) Push(n interface{}) {
 }
 
 func (q *Queue) Pop() interface{} {
-	if q.count <= 0 || q.count > len(q.nodes) {
+	if q.IsEmpty() {
 		return nil
 	}
 
@@ -22,7 +22,7 @@ func (q *Queue) Pop() interface{} {
 }
 
 func (q *Queue) Peek() interface{} {
-	if q.count <= 0 || q.count > len(q.nodes) {
+	if q.IsEmpty() {
 		return nil
 	}
 
@@ -45,7 +45,7 @@ func (q *Queue) Size() int {
 }
 
 func (q *Queue) IsEmpty() bool {
-	if q.count <= 0 {
+	if q.Size() <= 0 {
 		return true
 	} else {
 		return false
