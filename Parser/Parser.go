@@ -23,12 +23,12 @@ func (p *Parser) Parse(s string) []interface{} {
 func (p *Parser) shunting_yard(s []rune) []interface{} {
 	for i := 0; i < len(s); i++ {
 		if t := s[i]; p.isNum(t) {
-			ti := int(t-'0')
+			ti := float64(t-'0')
 			// if current s is number and also
 			// next one, then its the same number
 			for j := i + 1; j < len(s); j++ {
 				if p.isNum(s[j]) {
-					ti = ti * 10 + int(s[j]-'0') 
+					ti = ti * 10 + float64(s[j]-'0') 
 					i = j
 				} else {
 					break
@@ -132,8 +132,8 @@ func (p *Parser) Status() {
 	for i := 0; i < len(ops); i++ {
 		op := ops[i]
 		switch op.(type) {
-		case int:
-			fmt.Printf("		%d\n", op.(int))
+		case float64:
+			fmt.Printf("		%f\n", op.(float64))
 		case rune:
 			fmt.Printf("		%s\n", string(op.(rune)))
 		}
@@ -144,8 +144,8 @@ func (p *Parser) Status() {
 	for i := 0; i < len(rpn); i++ {
 		op := rpn[i]
 		switch op.(type) {
-		case int:
-			fmt.Printf("		%d\n", op.(int))
+		case float64:
+			fmt.Printf("		%f\n", op.(float64))
 		case rune:
 			fmt.Printf("		%s\n", string(op.(rune)))
 		}
